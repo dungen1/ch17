@@ -1,0 +1,246 @@
+pd.read_sql('SELECT id, first, last FROM authors',
+             connection, index_col=['id'])
+
+	first		last
+id		
+1	Paul		Deitel
+2	Harvey		Deitel
+3	Abbey		Deitel
+4	Dan		Quirk
+5	Alexander	Wald
+
+
+pd.read_sql("""SELECT id, first, last 
+                FROM authors
+                WHERE first LIKE '_b%'""",
+            connection, index_col=['id'])
+
+	first	last
+id		
+3	Abbey	Deitel
+
+
+pd.read_sql('SELECT title FROM titles ORDER BY title ASC', connection)
+
+	title
+0	Android 6 for Programmers
+1	Android How to Program
+2	C How to Program
+3	C++ How to Program
+4	Internet & WWW How to Program
+5	Intro to Python for CS and DS
+6	Java How to Program
+7	Visual Basic 2012 How to Program
+8	Visual C# How to Program
+9	Visual C++ How to Program
+
+
+pd.read_sql("""SELECT id, first, last 
+                FROM authors
+                ORDER BY last, first""",
+            connection, index_col=['id'])
+
+	first		last
+id		
+3	Abbey		Deitel
+2	Harvey		Deitel
+1	Paul		Deitel
+4	Dan		Quirk
+5	Alexander	Wald
+
+
+pd.read_sql("""SELECT id, first, last 
+                FROM authors
+                ORDER BY last DESC, first ASC""",
+            connection, index_col=['id'])
+
+	first		last
+id		
+5	Alexander	Wald
+4	Dan		Quirk
+3	Abbey		Deitel
+2	Harvey		Deitel
+1	Paul		Deitel
+
+
+pd.read_sql("""SELECT isbn, title, edition, copyright 
+            FROM titles
+            WHERE title LIKE '%How to Program'
+            ORDER BY title""", connection)
+
+isbn	title	edition	copyright
+0	0134444302	Android How to Program			3	2017
+1	0133976890	C How to Program			8	2016
+2	0134448235	C++ How to Program			10	2017
+3	0132151006	Internet & WWW How to Program		5	2012
+4	0134743350	Java How to Program			11	2018
+5	0133406954	Visual Basic 2012 How to Program	6	2014
+6	0134601548	Visual C# How to Program		6	2017
+7	0136151574	Visual C++ How to Program		2	2008
+
+pd.read_sql("""SELECT first, last, isbn 
+                FROM authors
+                INNER JOIN author_ISBN
+                    ON authors.id = author_ISBN.id
+                ORDER BY last, first""", connection).head()
+
+	first	last	isbn
+0	Abbey	Deitel	0132151006
+1	Abbey	Deitel	0133406954
+2	Harvey	Deitel	0134289366
+3	Harvey	Deitel	0135404673
+4	Harvey	Deitel	0132151006
+
+
+cursor = cursor.execute("""INSERT INTO authors (first, last)
+                        VALUES ('Sue', 'Red')""")
+
+pd.read_sql('SELECT id, first, last FROM authors',
+             connection, index_col=['id'])
+
+	first		last
+id		
+1	Paul		Deitel
+2	Harvey		Deitel
+3	Abbey		Deitel
+4	Dan		Quirk
+5	Alexander	Wald
+7	Sue		Red
+
+
+cursor = cursor.execute("""UPDATE authors SET last = 'Black'
+                        WHERE id = 7""")
+
+pd.read_sql('SELECT id, first, last FROM authors',
+             connection, index_col=['id'])
+
+	first		last
+id		
+1	Paul		Deitel
+2	Harvey		Deitel
+3	Abbey		Deitel
+4	Dan		Quirk
+5	Alexander	Wald
+7	Sue		Black
+
+
+cursor = cursor.execute('DELETE FROM authors WHERE id = 7')
+
+cursor.rowcount
+1
+
+pd.read_sql('SELECT id, first, last FROM authors',
+             connection, index_col=['id'])
+
+	first		last
+id		
+1	Paul		Deitel
+2	Harvey		Deitel
+3	Abbey		Deitel
+4	Dan		Quirk
+5	Alexander	Wald
+
+pd.read_sql('''SELECT last FROM authors
+            ORDER BY last DESC''', connection)
+
+	last
+0	Wald
+1	Quirk
+2	Deitel
+3	Deitel
+4	Deitel
+
+pd.read_sql('''SELECT title FROM titles
+            ORDER BY title ASC''', connection)
+
+	title
+0	Android 6 for Programmers
+1	Android How to Program
+2	C How to Program
+3	C++ How to Program
+4	Internet & WWW How to Program
+5	Intro to Python for CS and DS
+6	Java How to Program
+7	Visual Basic 2012 How to Program
+8	Visual C# How to Program
+9	Visual C++ How to Program
+
+pd.read_sql("""SELECT T.title, T.copyright, AI.isbn 
+                FROM authors A
+                INNER JOIN author_ISBN AI
+                    ON A.id = AI.id
+                INNER JOIN titles T
+                    ON T.isbn = AI.isbn
+                WHERE A.id = 1
+                ORDER BY title""", 
+                connection)
+
+			title			copyright	isbn
+0	Android 6 for Programmers		2016		0134289366
+1	Android How to Program			2017		0134444302
+2	C How to Program			2016		0133976890
+3	C++ How to Program			2017		0134448235
+4	Internet & WWW How to Program		2012		0132151006
+5	Intro to Python for CS and DS		2020		0135404673
+6	Java How to Program			2018		0134743350
+7	Visual Basic 2012 How to Program	2014		0133406954
+8	Visual C# How to Program		2017		0134601548
+9	Visual C++ How to Program		2008		0136151574
+
+cursor = cursor.execute("""INSERT INTO authors (first, last)
+                        VALUES ('Gilbert', 'Held')""")
+
+pd.read_sql('SELECT id, first, last FROM authors',
+             connection, index_col=['id'])
+
+	first		last
+id		
+1	Paul		Deitel
+2	Harvey		Deitel
+3	Abbey		Deitel
+4	Dan		Quirk
+5	Alexander	Wald
+6	Gilbert		Held
+
+cursor = cursor.execute("""INSERT INTO author_ISBN (id, isbn)
+                        VALUES (6, 0672309343)""")
+
+<bound method NDFrame.head of     id        isbn
+0    1  0134289366
+1    2  0134289366
+2    5  0134289366
+3    1  0135404673
+4    2  0135404673
+5    1  0132151006
+6    2  0132151006
+7    3  0132151006
+8    1  0134743350
+9    2  0134743350
+10   1  0133976890
+11   2  0133976890
+12   1  0133406954
+13   2  0133406954
+14   3  0133406954
+15   1  0134601548
+16   2  0134601548
+17   1  0136151574
+18   2  0136151574
+19   4  0136151574
+20   1  0134448235
+21   2  0134448235
+22   1  0134444302
+23   2  0134444302
+24   6   672309343>
+
+cursor = cursor.execute("""INSERT INTO titles (isbn, title, edition, 				copyright)
+                        VALUES (0672309343, 'Understanding Data 				Communications', 5, 1996)""")
+
+pd.read_sql("""SELECT isbn, title, edition, copyright 
+            FROM titles
+            WHERE title LIKE 'Understanding%'
+            ORDER BY title""", connection)
+
+	isbn		title				edition	copyright
+0	672309343	Understanding Data Communications	5	1996
+
+
